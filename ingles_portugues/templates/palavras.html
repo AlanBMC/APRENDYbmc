@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Required meta tags -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.0/css/all.css">
+  <link rel="stylesheet" href="{% static 'palavras.css' %}">
+    <title>Palavras</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">APRENDY</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#nos">alguma coisa</a>
+              </li>
+             
+            </ul>
+           
+          </div>
+        </div>
+      </nav>
+     
+
+      <div class="wrapper">
+
+        <div class="header">
+          <h1 class="header__title">Estágio 1 </h1>
+        </div>
+          {% for message in messages %}
+              <div class="message bg-{{ message.tags }}" id="mg"  style="position: fixed;box-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;width: 40%;padding: 10px;">
+                  {{ message }}
+              </div>
+          {% endfor %}
+        <div class="cards">
+            {% for palavra in palavras %}
+             
+                
+             
+                <div class=" card [ is-collapsed ] " >
+               
+                  
+                  <div class="card__inner [ js-expander ]" >
+                  
+                  
+              
+                          <span>{{palavra.palavra_ingles}}</span>
+                      
+                          <i class="fa-solid fa-play play_som"></i>
+                          <div>
+                            <form action="{% url 'verifica_resposta' %}" method="POST"> {% csrf_token %}
+                                <input class="input_texto" type="text" name="resposta_usuario" placeholder="Tradução">
+                                <input type="hidden" name="resposta_correta" value="{{palavra.palavra_portugues}}">
+                                <input type="hidden" name="id_palavra" value="{{palavra.id}}">
+                                <button type="submit" class="envia_texto"><i class="fa-solid fa-check"></i></button>
+                            </form>
+                          </div>
+
+                          <button class="modal_ver_dica_um" onclick="abre_fecha_modal_pronuncia('{{palavra.id}}')">
+                              <i class="fa-solid fa-plus"></i>
+                          </button>
+
+                          <div class="card_verso" id="card_verso{{palavra.id}}">
+                                <span>{{palavra.palavra_pronuncia}}</span>
+                                <a href="#">
+                                  <i class="fa-solid fa-play play_som"></i>
+                                </a>
+                                <button class="modal_ver_dica_dois" onclick="abre_fecha_modal_portugues('{{palavra.id}}')" >
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                          </div>
+
+                          <div class="card_verso_port" id="modal_portugues{{palavra.id}}"> 
+                            <span>{{palavra.palavra_portugues}}</span>
+                              <a href="#">
+                                <i class="fa-solid fa-play play_som"></i>
+                              </a>
+                          </div>
+                    </div>
+                </div>
+                
+              
+            {%endfor%}
+        </div>
+      </div>
+
+      <script src="{% static 'js/script_palavras.js' %}" ></script>
+          <script>
+                setTimeout(function() {
+                    const messages = document.querySelectorAll('.message'); // Seleciona todos os elementos com a classe 'message'
+                    messages.forEach(function(message) {
+                        message.style.display = 'none'; // Esconde cada mensagem
+                    });
+                }, 3000);
+          </script>
+</body>
+</html>
